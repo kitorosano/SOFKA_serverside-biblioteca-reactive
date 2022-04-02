@@ -71,8 +71,21 @@ public class RecursoDTO {
   public void setFecha_prestamo(LocalDate fecha_prestamo) {
     // validar que cuando no este disponible no sea null
     if(!this.disponible && fecha_prestamo == null) 
-      throw new IllegalArgumentException("La fecha no puede ser nula");
+      throw new IllegalArgumentException("La fecha no puede ser nula cuando el recurso no esta disponible");
     this.fecha_prestamo = fecha_prestamo;
+  }
+
+
+  @Override
+  public String toString() {
+    return "{" +
+      " id='" + getId() + "'" +
+      ", nombre='" + getNombre() + "'" +
+      ", tipo='" + getTipo() + "'" +
+      ", tema='" + getTema() + "'" +
+      ", disponible='" + isDisponible() + "'" +
+      ", fecha_prestamo='" + getFecha_prestamo() + "'" +
+      "}";
   }
 
 }

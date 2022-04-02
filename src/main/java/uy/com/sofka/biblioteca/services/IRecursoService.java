@@ -9,7 +9,7 @@ public interface IRecursoService {
   List<RecursoDTO> obtenerTodos();
   RecursoDTO obtenerPorId(String id);
   List<RecursoDTO> recomendarRecursos(String semejante);
-  RecursoDTO modificar(RecursoDTO recursoDTO);
+  RecursoDTO modificar(String id, RecursoDTO recursoDTO);
   void prestarRecurso(String id);
   void devolverRecurso(String id);
   void borrar(String id);

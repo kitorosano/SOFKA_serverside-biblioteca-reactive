@@ -3,6 +3,8 @@ package uy.com.sofka.biblioteca.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,42 +28,104 @@ public class RecursoController {
   IRecursoService service;
 
   @PostMapping("")
-  public RecursoDTO crear(@RequestBody RecursoDTO recursoDTO) {
-    return service.crear(recursoDTO);
+  public ResponseEntity<?> crear(@RequestBody RecursoDTO recursoDTO) {
+    try {
+      RecursoDTO recurso = service.crear(recursoDTO);
+      return new ResponseEntity<RecursoDTO>(recurso, HttpStatus.CREATED);
+    } catch (Exception e) {
+      return new ResponseEntity<String>(e.getMessage(), HttpStatus.EXPECTATION_FAILED);
+    }
   }
 
   @GetMapping("")
-  public List<RecursoDTO> obtenerTodos() {
-    return service.obtenerTodos();
+  public ResponseEntity<?> obtenerTodos() {
+    try {
+      List<RecursoDTO> recursos = service.obtenerTodos();
+      if(recursos.isEmpty())
+        return new ResponseEntity<String>("No hay recursos", HttpStatus.NOT_FOUND);
+      return new ResponseEntity<List<RecursoDTO>>(recursos, HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<>(e.getMessage(), HttpStatus.EXPECTATION_FAILED);
+    }
   }
 
   @GetMapping("/{id}")
-  public RecursoDTO obtenerPorId(@PathVariable("id") String id) {
-    return service.obtenerPorId(id);
+  public ResponseEntity<?> obtenerPorId(@PathVariable("id") String id) {
+    try {
+      RecursoDTO recurso = service.obtenerPorId(id);
+      if(recurso == null)
+        return new ResponseEntity<String>("No se encontro el recurso", HttpStatus.NOT_FOUND);
+      return new ResponseEntity<RecursoDTO>(recurso, HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<String>(e.getMessage(), HttpStatus.EXPECTATION_FAILED);
+    }
+  }
+
+  @GetMapping("{id}/disponible")
+  public ResponseEntity<?> obtenerDisponible(@PathVariable("id") String id) {
+    try {
+      RecursoDTO recurso = service.obtenerPorId(id);
+      if(recurso == null)
+        return new ResponseEntity<String>("No se encontro el recurso", HttpStatus.NOT_FOUND);
+      if(!recurso.isDisponible())
+        return new ResponseEntity<String>("El recurso no esta disponible. Se presto el dia: " + recurso.getFecha_prestamo(), HttpStatus.OK);
+      return new ResponseEntity<String>("El recurso esta disponible", HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<String>(e.getMessage(), HttpStatus.EXPECTATION_FAILED);
+    }
   }
 
   @GetMapping("/recomendar")
-  public List<RecursoDTO> recomendarRecursos(String semejante) {
-    return service.recomendarRecursos(semejante);
+  public ResponseEntity<?> recomendarRecursos(String semejante) {
+    try {
+      List<RecursoDTO> recursos = service.recomendarRecursos(semejante);
+      if(recursos.isEmpty())
+        return new ResponseEntity<String>("No hay recursos semejantes", HttpStatus.NOT_FOUND);
+      return new ResponseEntity<List<RecursoDTO>>(recursos, HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<String>(e.getMessage(), HttpStatus.EXPECTATION_FAILED);
+    }
   }
 
   @PutMapping("/{id}")
-  public RecursoDTO modificar(@PathVariable("id") String id, @RequestBody RecursoDTO recursoDTO) {
-    return service.modificar(recursoDTO);
+  public ResponseEntity<?> modificar(@PathVariable("id") String id, @RequestBody RecursoDTO recursoDTO) {
+    try {
+      RecursoDTO recurso = service.modificar(id, recursoDTO);
+      if(recurso == null)
+        return new ResponseEntity<String>("No se encontro el recurso", HttpStatus.NOT_FOUND);
+      return new ResponseEntity<RecursoDTO>(recurso, HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<String>(e.getMessage(), HttpStatus.EXPECTATION_FAILED);
+    }
   }
 
   @PutMapping("/{id}/prestar")
-  public void prestarRecurso(@PathVariable("id") String id) {
-    service.prestarRecurso(id);
+  public ResponseEntity<?> prestarRecurso(@PathVariable("id") String id) {
+    try {
+      service.prestarRecurso(id);
+      return new ResponseEntity<String>("El recurso ha sido prestado", HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<String>(e.getMessage(), HttpStatus.EXPECTATION_FAILED);
+    }
   }
 
   @PutMapping("/{id}/devolver")
-  public void devolverRecurso(@PathVariable("id") String id) {
-    service.devolverRecurso(id);
+  public ResponseEntity<?> devolverRecurso(@PathVariable("id") String id) {
+    try {
+      service.devolverRecurso(id);
+      return new ResponseEntity<String>("El recurso ha sido devuelto", HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<String>(e.getMessage(), HttpStatus.EXPECTATION_FAILED);
+    }
   }
 
   @DeleteMapping("/{id}")
-  public void borrar(@PathVariable("id") String id) {
-    service.borrar(id);
+  public ResponseEntity<?> borrar(@PathVariable("id") String id) {
+    try {
+      service.borrar(id);
+      return new ResponseEntity<String>("El recurso ha sido borrado", HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<String>(e.getMessage(), HttpStatus.EXPECTATION_FAILED);
+    }
   }
 }

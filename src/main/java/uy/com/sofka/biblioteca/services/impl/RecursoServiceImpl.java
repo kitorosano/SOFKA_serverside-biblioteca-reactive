@@ -22,8 +22,13 @@ public class RecursoServiceImpl implements IRecursoService {
 
   
   public RecursoDTO crear(RecursoDTO recursoDTO) {
-    Recurso recurso = mapper.fromDTO2Entity(recursoDTO);
-    return mapper.fromEntity2DTO(repositorio.save(recurso));
+    try {
+      Recurso recurso = mapper.fromDTO2Entity(recursoDTO);
+      recurso = repositorio.save(recurso);
+      return mapper.fromEntity2DTO(recurso);
+    } catch (Exception e) {
+      throw new IllegalArgumentException(e.getMessage());
+    }
   }
 
   public List<RecursoDTO> obtenerTodos() {
@@ -42,10 +47,10 @@ public class RecursoServiceImpl implements IRecursoService {
     return mapper.fromListEntity2ListDTO(semejantes);
   }
 
-  public RecursoDTO modificar(RecursoDTO recursoDTO) {
-    Recurso recurso = mapper.fromDTO2Entity(recursoDTO);
-    repositorio.findById(recurso.getId()).orElseThrow(() -> new RuntimeException("Recurso no encontrado"));
-    return mapper.fromEntity2DTO(repositorio.save(recurso));
+  public RecursoDTO modificar(String id, RecursoDTO recursoDTO) {
+    Recurso recurso = repositorio.findById(id).orElseThrow(() -> new RuntimeException("Recurso no encontrado"));
+    Recurso recursoModificado = mapper.fromDTO2Entity(recursoDTO, recurso);
+    return mapper.fromEntity2DTO(repositorio.save(recursoModificado));
   }
 
   public void prestarRecurso(String id) {
