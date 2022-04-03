@@ -21,13 +21,13 @@ public class RecursoMapper {
     return recurso;
   }
 
-  public Recurso fromDTO2Entity(RecursoDTO dto, Recurso recurso){
-    recurso.setId(dto.getId());    
-    recurso.setNombre(dto.getNombre());
-    recurso.setTipo(dto.getTipo());
-    recurso.setTema(dto.getTema());
-    recurso.setDisponible(dto.isDisponible());
-    recurso.setFecha_prestamo(dto.getFecha_prestamo());
+  public Recurso fromDTO2EntityUpdate(RecursoDTO dto, Recurso recurso){
+    if(dto.getId() != null) recurso.setId(dto.getId());
+    if(dto.getNombre() != null) recurso.setNombre(dto.getNombre());
+    if(dto.getTipo() != null) recurso.setTipo(dto.getTipo());
+    if(dto.getTema() != null) recurso.setTema(dto.getTema());
+    if(dto.isDisponible() != null) recurso.setDisponible(dto.isDisponible());
+    if(dto.getFecha_prestamo() != null) recurso.setFecha_prestamo(dto.getFecha_prestamo());
     return recurso;
   }
 

@@ -46,12 +46,19 @@ public class RecursoServiceImpl implements IRecursoService {
       semejantes.addAll((List<Recurso>) repositorio.findByTipoContaining(tipo));
     if(!tema.isEmpty())
       semejantes.addAll((List<Recurso>) repositorio.findByTemaContaining(tema));
-    return mapper.fromListEntity2ListDTO(semejantes);
+
+    // remover de la lista de semejantes los duplicados
+    List<Recurso> semejantesSinDuplicados = new ArrayList<>();
+    for(Recurso r : semejantes){
+      if(!semejantesSinDuplicados.contains(r))
+        semejantesSinDuplicados.add(r);
+    }
+    return mapper.fromListEntity2ListDTO(semejantesSinDuplicados);
   }
 
   public RecursoDTO modificar(String id, RecursoDTO recursoDTO) {
     Recurso recurso = repositorio.findById(id).orElseThrow(() -> new RuntimeException("Recurso no encontrado"));
-    Recurso recursoModificado = mapper.fromDTO2Entity(recursoDTO, recurso);
+    Recurso recursoModificado = mapper.fromDTO2EntityUpdate(recursoDTO, recurso);
     return mapper.fromEntity2DTO(repositorio.save(recursoModificado));
   }
 
