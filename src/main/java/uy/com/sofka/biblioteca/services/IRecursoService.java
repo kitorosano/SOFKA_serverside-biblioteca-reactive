@@ -8,7 +8,7 @@ public interface IRecursoService {
   RecursoDTO crear(RecursoDTO recursoDTO);
   List<RecursoDTO> obtenerTodos();
   RecursoDTO obtenerPorId(String id);
-  List<RecursoDTO> recomendarRecursos(String semejante);
+  List<RecursoDTO> recomendarRecursos(String tipo, String tema);
   RecursoDTO modificar(String id, RecursoDTO recursoDTO);
   void prestarRecurso(String id);
   void devolverRecurso(String id);

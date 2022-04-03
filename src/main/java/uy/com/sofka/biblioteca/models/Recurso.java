@@ -3,11 +3,13 @@ package uy.com.sofka.biblioteca.models;
 import java.time.LocalDate;
 import java.util.UUID;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "recursos")
 public class Recurso {
   
+  @Id
   private String id = UUID.randomUUID().toString();
   private String nombre;
   private String tipo;

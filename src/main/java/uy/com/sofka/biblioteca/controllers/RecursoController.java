@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import uy.com.sofka.biblioteca.dtos.RecursoDTO;
@@ -45,7 +46,7 @@ public class RecursoController {
         return new ResponseEntity<String>("No hay recursos", HttpStatus.NOT_FOUND);
       return new ResponseEntity<List<RecursoDTO>>(recursos, HttpStatus.OK);
     } catch (Exception e) {
-      return new ResponseEntity<>(e.getMessage(), HttpStatus.EXPECTATION_FAILED);
+      return new ResponseEntity<String>(e.getMessage(), HttpStatus.EXPECTATION_FAILED);
     }
   }
 
@@ -76,9 +77,9 @@ public class RecursoController {
   }
 
   @GetMapping("/recomendar")
-  public ResponseEntity<?> recomendarRecursos(String semejante) {
+  public ResponseEntity<?> recomendarRecursos(@RequestParam(value = "tipo", defaultValue = "") String tipo, @RequestParam(value = "tema", defaultValue = "") String tema, @RequestParam(value = "titulo", defaultValue = "") String titulo) {
     try {
-      List<RecursoDTO> recursos = service.recomendarRecursos(semejante);
+      List<RecursoDTO> recursos = service.recomendarRecursos(tipo, tema);
       if(recursos.isEmpty())
         return new ResponseEntity<String>("No hay recursos semejantes", HttpStatus.NOT_FOUND);
       return new ResponseEntity<List<RecursoDTO>>(recursos, HttpStatus.OK);

@@ -40,10 +40,12 @@ public class RecursoServiceImpl implements IRecursoService {
     return mapper.fromEntity2DTO(recurso);
   }
 
-  public List<RecursoDTO> recomendarRecursos(String semejante){
+  public List<RecursoDTO> recomendarRecursos(String tipo, String tema){
     List<Recurso> semejantes = new ArrayList<>();
-    semejantes.addAll((List<Recurso>) repositorio.findByTipo(semejante));
-    semejantes.addAll((List<Recurso>) repositorio.findByTema(semejante));
+    if(!tipo.isEmpty())
+      semejantes.addAll((List<Recurso>) repositorio.findByTipoContaining(tipo));
+    if(!tema.isEmpty())
+      semejantes.addAll((List<Recurso>) repositorio.findByTemaContaining(tema));
     return mapper.fromListEntity2ListDTO(semejantes);
   }
 

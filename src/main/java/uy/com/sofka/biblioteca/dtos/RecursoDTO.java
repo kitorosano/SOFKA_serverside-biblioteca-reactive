@@ -61,7 +61,11 @@ public class RecursoDTO {
   }
 
   public void setDisponible(Boolean disponible) {
-    this.disponible = disponible;
+    // verificar si es null entonces convertir a verdadero
+    if(disponible == null)
+      this.disponible = true;
+    else 
+      this.disponible = disponible;
   }
 
   public LocalDate getFecha_prestamo() {
