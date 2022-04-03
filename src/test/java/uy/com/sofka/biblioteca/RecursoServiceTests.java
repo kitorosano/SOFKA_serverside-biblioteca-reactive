@@ -9,15 +9,11 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.catalina.startup.ClassLoaderFactory.Repository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -238,19 +234,18 @@ public class RecursoServiceTests {
   }
 
   @Test
-  @DisplayName("Test delete Success")
+  @DisplayName("Test deleteById Success")
   public void borrarRecurso(){
-    var recurso = new Recurso();
-    recurso.setId("1111");
-    recurso.setNombre("Debajo del sol");
-    recurso.setTipo("Libro");
-    recurso.setTema("Fantasia");
-    recurso.setDisponible(false);
-    recurso.setFecha_prestamo(LocalDate.of(2022, 3, 31));
-
-    when(repository.findById("1111")).thenReturn(Optional.of(recurso));
     service.borrar("1111");
     
-    verify(repository, times(1)).deleteById(recurso.getId());
+    verify(repository, times(1)).deleteById("1111");
+  }
+
+  @Test
+  @DisplayName("Test deleteAll Success")
+  public void borrarTodos(){
+    service.borrarTodos();
+    
+    verify(repository, times(1)).deleteAll();
   }
 }

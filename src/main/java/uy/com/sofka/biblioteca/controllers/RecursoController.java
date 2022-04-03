@@ -129,4 +129,14 @@ public class RecursoController {
       return new ResponseEntity<String>(e.getMessage(), HttpStatus.EXPECTATION_FAILED);
     }
   }
+
+  @DeleteMapping("")
+  public ResponseEntity<?> borrarTodos() {
+    try {
+      service.borrarTodos();
+      return new ResponseEntity<String>("Todos los recursos han sido borrados", HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<String>(e.getMessage(), HttpStatus.EXPECTATION_FAILED);
+    }
+  }
 }

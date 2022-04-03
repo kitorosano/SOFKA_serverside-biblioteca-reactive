@@ -13,4 +13,5 @@ public interface IRecursoService {
   void prestarRecurso(String id);
   void devolverRecurso(String id);
   void borrar(String id);
+  void borrarTodos();
 }

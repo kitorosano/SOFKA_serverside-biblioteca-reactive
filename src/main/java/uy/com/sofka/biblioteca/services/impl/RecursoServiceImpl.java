@@ -88,4 +88,8 @@ public class RecursoServiceImpl implements IRecursoService {
     repositorio.deleteById(id);
   }
 
+  public void borrarTodos() {
+    repositorio.deleteAll();
+  }
+
 }
