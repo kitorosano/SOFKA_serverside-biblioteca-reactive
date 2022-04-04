@@ -1,6 +1,7 @@
 package uy.com.sofka.biblioteca.dtos;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class RecursoDTO {
   
@@ -79,6 +80,21 @@ public class RecursoDTO {
     this.fecha_prestamo = fecha_prestamo;
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (o == this)
+      return true;
+    if (!(o instanceof RecursoDTO)) {
+      return false;
+    }
+    RecursoDTO recursoDTO = (RecursoDTO) o;
+    return Objects.equals(id, recursoDTO.id) && Objects.equals(nombre, recursoDTO.nombre) && Objects.equals(tipo, recursoDTO.tipo) && Objects.equals(tema, recursoDTO.tema) && Objects.equals(disponible, recursoDTO.disponible) && Objects.equals(fecha_prestamo, recursoDTO.fecha_prestamo);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id, nombre, tipo, tema, disponible, fecha_prestamo);
+  }
 
   @Override
   public String toString() {

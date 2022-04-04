@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import uy.com.sofka.biblioteca.dtos.RecursoDTO;
 import uy.com.sofka.biblioteca.services.IRecursoService;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,8 +33,8 @@ public class RecursoController {
   @PostMapping("")
   public ResponseEntity<?> crear(@RequestBody RecursoDTO recursoDTO) {
     try {
-      RecursoDTO recurso = service.crear(recursoDTO);
-      return new ResponseEntity<RecursoDTO>(recurso, HttpStatus.CREATED);
+      Mono<RecursoDTO> recurso = service.crear(recursoDTO);
+      return new ResponseEntity<Mono<RecursoDTO>>(recurso, HttpStatus.CREATED);
     } catch (Exception e) {
       return new ResponseEntity<String>(e.getMessage(), HttpStatus.EXPECTATION_FAILED);
     }
@@ -41,10 +43,10 @@ public class RecursoController {
   @GetMapping("")
   public ResponseEntity<?> obtenerTodos() {
     try {
-      List<RecursoDTO> recursos = service.obtenerTodos();
-      if(recursos.isEmpty())
+      Flux<RecursoDTO> recursos = service.obtenerTodos();
+      if(recursos.isEmpty()) ///WORK ON HERE
         return new ResponseEntity<String>("No hay recursos", HttpStatus.NO_CONTENT);
-      return new ResponseEntity<List<RecursoDTO>>(recursos, HttpStatus.OK);
+      return new ResponseEntity<Flux<RecursoDTO>>(recursos, HttpStatus.OK);
     } catch (Exception e) {
       return new ResponseEntity<String>(e.getMessage(), HttpStatus.EXPECTATION_FAILED);
     }
