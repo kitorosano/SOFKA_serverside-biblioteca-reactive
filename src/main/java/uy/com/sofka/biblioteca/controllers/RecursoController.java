@@ -43,7 +43,7 @@ public class RecursoController {
     try {
       List<RecursoDTO> recursos = service.obtenerTodos();
       if(recursos.isEmpty())
-        return new ResponseEntity<String>("No hay recursos", HttpStatus.NOT_FOUND);
+        return new ResponseEntity<String>("No hay recursos", HttpStatus.NO_CONTENT);
       return new ResponseEntity<List<RecursoDTO>>(recursos, HttpStatus.OK);
     } catch (Exception e) {
       return new ResponseEntity<String>(e.getMessage(), HttpStatus.EXPECTATION_FAILED);
@@ -53,10 +53,9 @@ public class RecursoController {
   @GetMapping("/{id}")
   public ResponseEntity<?> obtenerPorId(@PathVariable("id") String id) {
     try {
-      RecursoDTO recurso = service.obtenerPorId(id);
-      if(recurso == null)
-        return new ResponseEntity<String>("No se encontro el recurso", HttpStatus.NOT_FOUND);
-      return new ResponseEntity<RecursoDTO>(recurso, HttpStatus.OK);
+      return new ResponseEntity<RecursoDTO>(service.obtenerPorId(id), HttpStatus.OK);
+    } catch (IllegalArgumentException e) {
+      return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND);
     } catch (Exception e) {
       return new ResponseEntity<String>(e.getMessage(), HttpStatus.EXPECTATION_FAILED);
     }
@@ -66,22 +65,22 @@ public class RecursoController {
   public ResponseEntity<?> obtenerDisponible(@PathVariable("id") String id) {
     try {
       RecursoDTO recurso = service.obtenerPorId(id);
-      if(recurso == null)
-        return new ResponseEntity<String>("No se encontro el recurso", HttpStatus.NOT_FOUND);
       if(!recurso.isDisponible())
-        return new ResponseEntity<String>("El recurso no esta disponible. Se presto el dia: " + recurso.getFecha_prestamo(), HttpStatus.OK);
+        return new ResponseEntity<String>("El recurso no esta disponible. Se presto el dia: " + recurso.getFecha_prestamo().toString(), HttpStatus.OK);
       return new ResponseEntity<String>("El recurso esta disponible", HttpStatus.OK);
+    } catch (IllegalArgumentException e ){
+      return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND);
     } catch (Exception e) {
       return new ResponseEntity<String>(e.getMessage(), HttpStatus.EXPECTATION_FAILED);
     }
   }
 
   @GetMapping("/recomendar")
-  public ResponseEntity<?> recomendarRecursos(@RequestParam(value = "tipo", defaultValue = "") String tipo, @RequestParam(value = "tema", defaultValue = "") String tema, @RequestParam(value = "titulo", defaultValue = "") String titulo) {
+  public ResponseEntity<?> recomendarRecursos(@RequestParam(value = "tipo", defaultValue = "") String tipo, @RequestParam(value = "tema", defaultValue = "") String tema) {
     try {
       List<RecursoDTO> recursos = service.recomendarRecursos(tipo, tema);
       if(recursos.isEmpty())
-        return new ResponseEntity<String>("No hay recursos semejantes", HttpStatus.NOT_FOUND);
+        return new ResponseEntity<String>("No hay recursos semejantes", HttpStatus.NO_CONTENT);
       return new ResponseEntity<List<RecursoDTO>>(recursos, HttpStatus.OK);
     } catch (Exception e) {
       return new ResponseEntity<String>(e.getMessage(), HttpStatus.EXPECTATION_FAILED);
@@ -92,9 +91,9 @@ public class RecursoController {
   public ResponseEntity<?> modificar(@PathVariable("id") String id, @RequestBody RecursoDTO recursoDTO) {
     try {
       RecursoDTO recurso = service.modificar(id, recursoDTO);
-      if(recurso == null)
-        return new ResponseEntity<String>("No se encontro el recurso", HttpStatus.NOT_FOUND);
       return new ResponseEntity<RecursoDTO>(recurso, HttpStatus.OK);
+    } catch (IllegalArgumentException e ){
+      return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND);
     } catch (Exception e) {
       return new ResponseEntity<String>(e.getMessage(), HttpStatus.EXPECTATION_FAILED);
     }
@@ -105,6 +104,10 @@ public class RecursoController {
     try {
       service.prestarRecurso(id);
       return new ResponseEntity<String>("El recurso ha sido prestado", HttpStatus.OK);
+    } catch (IllegalArgumentException e ){
+      return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND);
+    } catch (IllegalStateException e) {
+      return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_MODIFIED);
     } catch (Exception e) {
       return new ResponseEntity<String>(e.getMessage(), HttpStatus.EXPECTATION_FAILED);
     }
@@ -115,6 +118,10 @@ public class RecursoController {
     try {
       service.devolverRecurso(id);
       return new ResponseEntity<String>("El recurso ha sido devuelto", HttpStatus.OK);
+    } catch (IllegalArgumentException e ){
+      return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND);
+    } catch (IllegalStateException e) {
+      return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_MODIFIED);
     } catch (Exception e) {
       return new ResponseEntity<String>(e.getMessage(), HttpStatus.EXPECTATION_FAILED);
     }
@@ -124,7 +131,7 @@ public class RecursoController {
   public ResponseEntity<?> borrar(@PathVariable("id") String id) {
     try {
       service.borrar(id);
-      return new ResponseEntity<String>("El recurso ha sido borrado", HttpStatus.OK);
+      return new ResponseEntity<String>("El recurso ha sido borrado", HttpStatus.NO_CONTENT);
     } catch (Exception e) {
       return new ResponseEntity<String>(e.getMessage(), HttpStatus.EXPECTATION_FAILED);
     }
@@ -134,7 +141,7 @@ public class RecursoController {
   public ResponseEntity<?> borrarTodos() {
     try {
       service.borrarTodos();
-      return new ResponseEntity<String>("Todos los recursos han sido borrados", HttpStatus.OK);
+      return new ResponseEntity<String>("Todos los recursos han sido borrados", HttpStatus.NO_CONTENT);
     } catch (Exception e) {
       return new ResponseEntity<String>(e.getMessage(), HttpStatus.EXPECTATION_FAILED);
     }

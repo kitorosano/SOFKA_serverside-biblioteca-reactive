@@ -35,8 +35,9 @@ public class RecursoServiceImpl implements IRecursoService {
     List<Recurso> recursos = (List<Recurso>) repositorio.findAll();
     return mapper.fromListEntity2ListDTO(recursos);
   }
+
   public RecursoDTO obtenerPorId(String id) {
-    Recurso recurso = repositorio.findById(id).orElseThrow(() -> new RuntimeException("Recurso no encontrado"));
+    Recurso recurso = repositorio.findById(id).orElseThrow(() -> new IllegalArgumentException("No se encontro el recurso"));
     return mapper.fromEntity2DTO(recurso);
   }
 
@@ -57,31 +58,31 @@ public class RecursoServiceImpl implements IRecursoService {
   }
 
   public RecursoDTO modificar(String id, RecursoDTO recursoDTO) {
-    Recurso recurso = repositorio.findById(id).orElseThrow(() -> new RuntimeException("Recurso no encontrado"));
+    Recurso recurso = repositorio.findById(id).orElseThrow(() -> new IllegalArgumentException("No se encontro el recurso con ese Id"));
     Recurso recursoModificado = mapper.fromDTO2EntityUpdate(recursoDTO, recurso);
     return mapper.fromEntity2DTO(repositorio.save(recursoModificado));
   }
 
   public void prestarRecurso(String id) {
-    Recurso recurso = repositorio.findById(id).orElseThrow(() -> new RuntimeException("Recurso no encontrado"));
+    Recurso recurso = repositorio.findById(id).orElseThrow(() -> new IllegalArgumentException("No se encontro el recurso con ese Id"));
     if(recurso.isDisponible()) {
       recurso.setDisponible(false);
       recurso.setFecha_prestamo(LocalDate.now());
       repositorio.save(recurso);
     }
     else
-      throw new RuntimeException("El recurso ya está prestado");
+      throw new IllegalStateException("El recurso ya está prestado");
   }
 
   public void devolverRecurso(String id){
-    Recurso recurso = repositorio.findById(id).orElseThrow(() -> new RuntimeException("Recurso no encontrado"));
+    Recurso recurso = repositorio.findById(id).orElseThrow(() -> new IllegalArgumentException("No se encontro el recurso con ese Id"));
     if(!recurso.isDisponible()) {
       recurso.setDisponible(true);
       recurso.setFecha_prestamo(null);
       repositorio.save(recurso);
     }
     else
-      throw new RuntimeException("El recurso no se encuentra prestado, está disponible");
+      throw new IllegalStateException("El recurso no se encuentra prestado, está disponible");
   }
 
   public void borrar(String id) {
