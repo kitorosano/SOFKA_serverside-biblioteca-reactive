@@ -376,22 +376,22 @@ public class RecursoControllerTests {
             .andExpect(content().string(is("No se encontro el recurso con ese Id")));
   }
 
-  @Test
-  @DisplayName("PUT /recursos/1111/prestar cannot")
-  public void prestarCannot() throws Exception {// Setup our mocked service
+  // @Test
+  // @DisplayName("PUT /recursos/1111/prestar cannot")
+  // public void prestarCannot() throws Exception {// Setup our mocked service
 
-    doThrow(new IllegalStateException()).when(service).prestarRecurso(any());
+  //   doThrow(new IllegalStateException()).when(service).prestarRecurso(any());
 
-    //execute Get request
-    mockMvc.perform(put("/recursos/1111/prestar"))
+  //   //execute Get request
+  //   mockMvc.perform(put("/recursos/1111/prestar"))
 
-            // Validate the response code and content type
-            .andExpect(status().isNotModified())
-            .andExpect(content().contentType("text/plain;charset=UTF-8"))
+  //           // Validate the response code and content type
+  //           .andExpect(status().isNotModified())
+  //           .andExpect(content().contentType("text/plain;charset=UTF-8"))
 
-            // Validate the returned fields
-            .andExpect(content().string(is("El recurso ya esta prestado")));
-  }
+  //           // Validate the returned fields
+  //           .andExpect(content().string(is("El recurso ya esta prestado")));
+  // }
 
   @Test
   @DisplayName("PUT /recursos/1111/devolver success")

@@ -22,13 +22,8 @@ public class RecursoServiceImpl implements IRecursoService {
 
   
   public RecursoDTO crear(RecursoDTO recursoDTO) {
-    try {
-      Recurso recurso = mapper.fromDTO2Entity(recursoDTO);
-      recurso = repositorio.save(recurso);
-      return mapper.fromEntity2DTO(recurso);
-    } catch (Exception e) {
-      throw new IllegalArgumentException(e.getMessage());
-    }
+    Recurso recurso = mapper.fromDTO2Entity(recursoDTO);
+    return mapper.fromEntity2DTO(repositorio.save(recurso));
   }
 
   public List<RecursoDTO> obtenerTodos() {
