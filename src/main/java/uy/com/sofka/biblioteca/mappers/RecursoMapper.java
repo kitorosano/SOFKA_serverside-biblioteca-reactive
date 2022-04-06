@@ -1,8 +1,5 @@
 package uy.com.sofka.biblioteca.mappers;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.function.Function;
 
 import org.springframework.stereotype.Component;
@@ -15,14 +12,15 @@ public class RecursoMapper {
   
   //  ======= DTO -> ENTITY ======== //
   public Function<RecursoDTO, Recurso> mapDTO2Entity() {
-    return dto -> {
+    return dto2Validate -> {
+      var validatedDTO = mapDTO2ValidatedDTO(dto2Validate);
       var recurso = new Recurso();
-      recurso.setId(dto.getId());    
-      recurso.setNombre(dto.getNombre());
-      recurso.setTipo(dto.getTipo());
-      recurso.setTema(dto.getTema());
-      recurso.setDisponible(dto.isDisponible());
-      recurso.setFecha_prestamo(dto.getFecha_prestamo());
+      recurso.setId(validatedDTO.getId());    
+      recurso.setNombre(validatedDTO.getNombre());
+      recurso.setTipo(validatedDTO.getTipo());
+      recurso.setTema(validatedDTO.getTema());
+      recurso.setDisponible(validatedDTO.isDisponible());
+      recurso.setFecha_prestamo(validatedDTO.getFecha_prestamo());
       return recurso;
     };
   }
@@ -52,5 +50,17 @@ public class RecursoMapper {
       recursoDTO.setFecha_prestamo(entity.getFecha_prestamo());
       return recursoDTO;
     };
+  }
+
+  // ======= DTO -> VALIDATED DTO ======== //
+  public RecursoDTO mapDTO2ValidatedDTO(RecursoDTO dto) {
+      var validated = new RecursoDTO();
+      validated.setId(dto.getId());    
+      validated.setNombre(dto.getNombre());
+      validated.setTipo(dto.getTipo());
+      validated.setTema(dto.getTema());
+      validated.setDisponible(dto.isDisponible());
+      validated.setFecha_prestamo(dto.getFecha_prestamo());
+      return validated;
   }
 }

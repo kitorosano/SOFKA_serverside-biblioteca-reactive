@@ -3,6 +3,8 @@ package uy.com.sofka.biblioteca.models;
 import java.time.LocalDate;
 import java.util.UUID;
 
+import javax.validation.constraints.NotBlank;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -11,8 +13,11 @@ public class Recurso {
   
   @Id
   private String id = UUID.randomUUID().toString();
+  @NotBlank
   private String nombre;
+  @NotBlank
   private String tipo;
+  @NotBlank
   private String tema;
   private Boolean disponible = true;
   private LocalDate fecha_prestamo;

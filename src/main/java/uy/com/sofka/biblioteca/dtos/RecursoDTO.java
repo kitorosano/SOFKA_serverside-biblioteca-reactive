@@ -3,11 +3,16 @@ package uy.com.sofka.biblioteca.dtos;
 import java.time.LocalDate;
 import java.util.Objects;
 
+import javax.validation.constraints.NotBlank;
+
 public class RecursoDTO {
   
   private String id;
+  @NotBlank
   private String nombre;
+  @NotBlank
   private String tipo;
+  @NotBlank
   private String tema;
   private Boolean disponible;
   private LocalDate fecha_prestamo;
