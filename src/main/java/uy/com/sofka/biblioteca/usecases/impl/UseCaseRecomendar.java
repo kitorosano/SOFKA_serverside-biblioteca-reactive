@@ -10,11 +10,11 @@ import reactor.core.publisher.Flux;
 import uy.com.sofka.biblioteca.dtos.RecursoDTO;
 import uy.com.sofka.biblioteca.mappers.RecursoMapper;
 import uy.com.sofka.biblioteca.repositories.IRecursoRepository;
-import uy.com.sofka.biblioteca.usecases.FindRecomendedRecurso;
+import uy.com.sofka.biblioteca.usecases.RecomendarRecursos;
 
 @Service
 @Validated
-public class UseCaseRecomendar implements FindRecomendedRecurso {
+public class UseCaseRecomendar implements RecomendarRecursos {
   Logger logger = LoggerFactory.getLogger(UseCaseRecomendar.class); 
   
   @Autowired

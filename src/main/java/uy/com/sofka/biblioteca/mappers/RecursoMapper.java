@@ -1,5 +1,6 @@
 package uy.com.sofka.biblioteca.mappers;
 
+import java.util.Objects;
 import java.util.function.Function;
 
 import org.springframework.stereotype.Component;
@@ -41,6 +42,7 @@ public class RecursoMapper {
   //  ======= ENTITY -> DTO ======== //
   public Function<Recurso, RecursoDTO> mapEntity2DTO() {
     return entity -> {
+      if(Objects.isNull(entity)) return null;
       var recursoDTO = new RecursoDTO();
       recursoDTO.setId(entity.getId());    
       recursoDTO.setNombre(entity.getNombre());

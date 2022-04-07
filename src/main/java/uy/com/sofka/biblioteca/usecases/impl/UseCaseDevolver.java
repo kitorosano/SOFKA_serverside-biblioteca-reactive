@@ -6,11 +6,11 @@ import org.springframework.validation.annotation.Validated;
 
 import reactor.core.publisher.Mono;
 import uy.com.sofka.biblioteca.repositories.IRecursoRepository;
-import uy.com.sofka.biblioteca.usecases.UpdateDevolverRecurso;
+import uy.com.sofka.biblioteca.usecases.DevolverRecurso;
 
 @Service
 @Validated
-public class UseCaseDevolver implements UpdateDevolverRecurso {
+public class UseCaseDevolver implements DevolverRecurso {
 
   @Autowired
   private IRecursoRepository repository;

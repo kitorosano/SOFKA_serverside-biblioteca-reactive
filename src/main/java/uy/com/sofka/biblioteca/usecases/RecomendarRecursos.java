@@ -4,6 +4,6 @@ import reactor.core.publisher.Flux;
 import uy.com.sofka.biblioteca.dtos.RecursoDTO;
 
 @FunctionalInterface
-public interface FindRecomendedRecurso {
+public interface RecomendarRecursos {
   Flux<RecursoDTO> apply(String tipo, String tema);
 }

@@ -4,6 +4,6 @@ import reactor.core.publisher.Mono;
 import uy.com.sofka.biblioteca.dtos.RecursoDTO;
 
 @FunctionalInterface
-public interface FindByIdRecurso {
-  Mono<RecursoDTO> apply(String id);
+public interface ModificarRecurso {
+  Mono<RecursoDTO> apply(String id, RecursoDTO recursoDTO);
 }

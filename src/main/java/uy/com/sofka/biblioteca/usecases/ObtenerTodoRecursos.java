@@ -4,6 +4,6 @@ import reactor.core.publisher.Flux;
 import uy.com.sofka.biblioteca.dtos.RecursoDTO;
 
 @FunctionalInterface
-public interface FindAllRecurso {
+public interface ObtenerTodoRecursos {
   Flux<RecursoDTO> apply();
 }

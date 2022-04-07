@@ -8,11 +8,11 @@ import reactor.core.publisher.Flux;
 import uy.com.sofka.biblioteca.dtos.RecursoDTO;
 import uy.com.sofka.biblioteca.mappers.RecursoMapper;
 import uy.com.sofka.biblioteca.repositories.IRecursoRepository;
-import uy.com.sofka.biblioteca.usecases.FindAllRecurso;
+import uy.com.sofka.biblioteca.usecases.ObtenerTodoRecursos;
 
 @Service
 @Validated
-public class UseCaseObtenerTodos implements FindAllRecurso {
+public class UseCaseObtenerTodos implements ObtenerTodoRecursos {
 
   @Autowired
   private IRecursoRepository repository;

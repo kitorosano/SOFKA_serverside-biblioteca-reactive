@@ -1,7 +1,6 @@
 package uy.com.sofka.biblioteca;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -9,8 +8,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,10 +15,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import uy.com.sofka.biblioteca.dtos.RecursoDTO;
 import uy.com.sofka.biblioteca.models.Recurso;
 import uy.com.sofka.biblioteca.repositories.IRecursoRepository;
-import uy.com.sofka.biblioteca.services.IRecursoService;
+import uy.com.sofka.biblioteca.usecases.*;
 
 @SpringBootTest
 public class RecursoServiceTests {
@@ -29,94 +28,9 @@ public class RecursoServiceTests {
   @MockBean
   private IRecursoRepository repository;
 
+
   @Autowired
-  private IRecursoService service;
-
-  @Test
-  @DisplayName("Test findAll Success")
-  public void obtenerTodosLosRecursos() {
-    var recurso1 = new Recurso();
-    recurso1.setId("1111");
-    recurso1.setNombre("Debajo del sol");
-    recurso1.setTipo("Libro");
-    recurso1.setTema("Fantasia");
-    recurso1.setDisponible(false);
-    recurso1.setFecha_prestamo(LocalDate.now());
-
-    var recurso2 = new Recurso();
-    recurso2.setId("2222");
-    recurso2.setNombre("Condorito");
-    recurso2.setTipo("Revista");
-    recurso2.setTema("Comedia");
-    recurso2.setDisponible(true);
-    recurso2.setFecha_prestamo(null);
-
-
-    var lista = List.of(recurso1, recurso2);
-
-    when(repository.findAll()).thenReturn(lista);
-
-    var resultado = service.obtenerTodos();
-
-    assertEquals(2, resultado.size());
-    assertEquals(recurso1.getNombre(), resultado.get(0).getNombre());
-    assertEquals(recurso2.getNombre(), resultado.get(1).getNombre());
-  }
-
-  @Test
-  @DisplayName("Test findById Success")
-  public void obtenerRecursoPorId() {
-    var recurso = new Recurso();
-    recurso.setId("1111");
-    recurso.setNombre("Debajo del sol");
-    recurso.setTipo("Libro");
-    recurso.setTema("Fantasia");
-    recurso.setDisponible(false);
-    recurso.setFecha_prestamo(LocalDate.now());
-    
-
-    when(repository.findById("1111")).thenReturn(Optional.of(recurso));
-
-    var resultado = service.obtenerPorId("1111");
-
-    assertEquals(recurso.getId(), resultado.getId());
-    assertEquals(recurso.getNombre(), resultado.getNombre());
-    assertEquals(recurso.getTipo(), resultado.getTipo());
-    assertEquals(recurso.getTema(), resultado.getTema());
-    assertEquals(recurso.isDisponible(), resultado.isDisponible());
-    assertEquals(recurso.getFecha_prestamo(), resultado.getFecha_prestamo());
-  }
-
-  @Test
-  @DisplayName("Test save Success")
-  public void crearRecurso() {
-    var recurso = new Recurso();
-    recurso.setId("2222");
-    recurso.setNombre("Condorito");
-    recurso.setTipo("Revista");
-    recurso.setTema("Comedia");
-    recurso.setDisponible(true);
-    recurso.setFecha_prestamo(null);
-
-    var dto = new RecursoDTO();
-    dto.setNombre("Condorito");
-    dto.setTipo("Revista");
-    dto.setTema("Comedia");
-
-    when(repository.save(any())).thenReturn(recurso);
-
-    var resultado = service.crear(dto);
-
-    assertNotNull(resultado, "el valor guardado no debe ser nulo");
-
-    assertEquals(recurso.getNombre(), resultado.getNombre(), "el nombre no corresponde");
-    assertEquals(recurso.getTipo(), resultado.getTipo(), "el tipo no corresponde");
-    assertEquals(recurso.getTema(), resultado.getTema(), "el tema no corresponde");
-    assertEquals(recurso.isDisponible(), resultado.isDisponible(), "la disponibilidad no corresponde");
-    assertEquals(recurso.getFecha_prestamo(), resultado.getFecha_prestamo(), "la fecha no corresponde");
-  }
-
-  
+  private RecomendarRecursos recomendarUseCase;
   @Test
   @DisplayName("Test recomendar Success")
   public void recomendarRecursos() {
@@ -137,7 +51,7 @@ public class RecursoServiceTests {
     recurso2.setFecha_prestamo(null);
     
     var recurso3 = new Recurso();
-    recurso3.setId("2222");
+    recurso3.setId("3333");
     recurso3.setNombre("FFF");
     recurso3.setTipo("E-book");
     recurso3.setTema("Comedia");
@@ -145,27 +59,50 @@ public class RecursoServiceTests {
     recurso3.setFecha_prestamo(null);
     
     var recurso4 = new Recurso();
-    recurso4.setId("2222");
+    recurso4.setId("4444");
     recurso4.setNombre("Model Eyes");
     recurso4.setTipo("Revista");
     recurso4.setTema("Anuncio");
     recurso4.setDisponible(true);
     recurso4.setFecha_prestamo(null);
     
-    var listaRevista = List.of(recurso2, recurso4);
-    var listaComedia = List.of(recurso2, recurso3);
+    var fluxRevista = Flux.just(recurso2, recurso4);
+    var fluxComedia = Flux.just(recurso2, recurso3);
 
-    when(repository.findByTipoContaining("Revista")).thenReturn(listaRevista);
-    when(repository.findByTemaContaining("Comedia")).thenReturn(listaComedia);
+    when(repository.findByTipoContaining("Revista")).thenReturn(fluxRevista);
+    when(repository.findByTemaContaining("Comedia")).thenReturn(fluxComedia);
 
-    var resultado = service.recomendarRecursos("Revista", "Comedia");
+    recomendarUseCase.apply("Revista", "Comedia")
+                     .collectList()
+                     .subscribe(
+                        recursos -> {
+                          assertEquals(2, recursos.size());
+                          assertEquals("2222", recursos.get(0).getId());
+                          assertEquals("Condorito", recursos.get(0).getNombre());
+                          assertEquals("Revista", recursos.get(0).getTipo());
+                          assertEquals("Comedia", recursos.get(0).getTema());
+                          assertEquals(true, recursos.get(0).isDisponible());
+                          assertNull(recursos.get(0).getFecha_prestamo());
+                          
+                          assertEquals("4444", recursos.get(1).getId());
+                          assertEquals("Model Eyes", recursos.get(1).getNombre());
+                          assertEquals("Revista", recursos.get(1).getTipo());
+                          assertEquals("Anuncio", recursos.get(1).getTema());
+                          assertEquals(true, recursos.get(1).isDisponible());
+                          assertNull(recursos.get(1).getFecha_prestamo());
 
-    assertEquals(3, resultado.size());
-    assertEquals(recurso2.getTipo(), resultado.get(0).getTipo());
-    assertEquals(recurso2.getTipo(), resultado.get(1).getTipo());
-    assertEquals(recurso2.getTema(), resultado.get(2).getTema());
+                          assertEquals("3333", recursos.get(2).getId());
+                          assertEquals("FFF", recursos.get(2).getNombre());
+                          assertEquals("E-book", recursos.get(2).getTipo());
+                          assertEquals("Comedia", recursos.get(2).getTema());
+                          assertEquals(true, recursos.get(2).isDisponible());
+                          assertNull(recursos.get(2).getFecha_prestamo());
+                        });
   }
 
+
+  @Autowired
+  private ModificarRecurso modificarUseCase;
   @Test
   @DisplayName("Test update Success")
   public void modificarRecurso() {
@@ -182,17 +119,24 @@ public class RecursoServiceTests {
     dto.setTipo("Libro");
     dto.setTema("Lush");
 
-    when(repository.findById("1111")).thenReturn(Optional.of(recurso));
-    when(repository.save(any())).thenReturn(recurso);
+    var mono = Mono.just(recurso);
+    when(repository.findById("1111")).thenReturn(mono);
+    when(repository.save(any())).thenReturn(mono);
 
-    var resultado = service.modificar("1111", dto);
-
-    assertNotNull(resultado, "el valor guardado no debe ser nulo");
-    assertEquals(dto.getNombre(), resultado.getNombre(), "el nombre no corresponde");
-    assertEquals(dto.getTipo(), resultado.getTipo(), "el tipo no corresponde");
-    assertEquals(dto.getTema(), resultado.getTema(), "el tema no corresponde");
+    modificarUseCase.apply("1111", dto)
+                    .subscribe(
+                        recurso1 -> {
+                          assertEquals("1111", recurso1.getId());
+                          assertEquals("Debajo de la luna", recurso1.getNombre());
+                          assertEquals("Libro", recurso1.getTipo());
+                          assertEquals("Lush", recurso1.getTema());
+                          assertEquals(false, recurso1.isDisponible());
+                          assertEquals(LocalDate.now(), recurso1.getFecha_prestamo());
+                        });
   }
 
+  @Autowired
+  private PrestarRecurso prestarUseCase;
   @Test
   @DisplayName("Test prestar Success")
   public void prestarRecurso(){
@@ -204,15 +148,26 @@ public class RecursoServiceTests {
     recurso.setDisponible(true);
     recurso.setFecha_prestamo(null);
 
-    when(repository.findById("1111")).thenReturn(Optional.of(recurso));
-    when(repository.save(any())).thenReturn(recurso);
+    var mono = Mono.just(recurso);
+    when(repository.findById("1111")).thenReturn(mono);
+    when(repository.save(any())).thenReturn(mono);
     
-    service.prestarRecurso("1111");
-
-    assertEquals(false, recurso.isDisponible(), "el recurso no debe estar disponible");
-    assertNotNull(recurso.getFecha_prestamo(), "la fecha de prestamo no debe ser nula"); 
+    prestarUseCase.apply("1111")
+                  .then(
+                    mono.flatMap(recurso1 -> {
+                      assertEquals("1111", recurso1.getId());
+                      assertEquals("Debajo del sol", recurso1.getNombre());
+                      assertEquals("Libro", recurso1.getTipo());
+                      assertEquals("Fantasia", recurso1.getTema());
+                      assertEquals(false, recurso1.isDisponible());
+                      assertEquals(LocalDate.now(), recurso1.getFecha_prestamo());
+                      return Mono.just(recurso1);
+                    })
+                  );
   }
 
+  @Autowired
+  private DevolverRecurso devolverUseCase;
   @Test
   @DisplayName("Test devolver Success")
   public void devolverRecurso(){
@@ -224,28 +179,47 @@ public class RecursoServiceTests {
     recurso.setDisponible(false);
     recurso.setFecha_prestamo(LocalDate.of(2022, 3, 31));
 
-    when(repository.findById("1111")).thenReturn(Optional.of(recurso));
-    when(repository.save(any())).thenReturn(recurso);
+    var mono = Mono.just(recurso);
+    when(repository.findById("1111")).thenReturn(mono);
+    when(repository.save(any())).thenReturn(mono);
     
-    service.devolverRecurso("1111");
-
-    assertEquals(true, recurso.isDisponible(), "el recurso debe estar disponible");
-    assertNull(recurso.getFecha_prestamo(), "la fecha de prestamo debe ser nula"); 
+    devolverUseCase.apply("1111")
+                 .subscribe(e->
+                      mono.flatMap(recurso1 -> {
+                        assertEquals("1111", recurso1.getId());
+                        assertEquals("Debajo del sol", recurso1.getNombre());
+                        assertEquals("Libro", recurso1.getTipo());
+                        assertEquals("Fantasia", recurso1.getTema());
+                        assertEquals(true, recurso1.isDisponible());
+                        assertNull(recurso1.getFecha_prestamo());
+                        return Mono.just(recurso1);
+                      })
+                    ); 
   }
 
+  @Autowired
+  private BorrarRecurso borrarUseCase;
   @Test
   @DisplayName("Test deleteById Success")
   public void borrarRecurso(){
-    service.borrar("1111");
-    
-    verify(repository, times(1)).deleteById("1111");
+    when(repository.deleteById("1111")).thenReturn(Mono.empty());
+
+    borrarUseCase.apply("1111")
+                 .subscribe(e->
+                   verify(repository, times(1)).deleteById("1111")
+                 );
   }
 
+  @Autowired
+  private BorrarTodoRecursos borrarTodoUseCase;
   @Test
   @DisplayName("Test deleteAll Success")
   public void borrarTodos(){
-    service.borrarTodos();
-    
-    verify(repository, times(1)).deleteAll();
+    when(repository.deleteAll()).thenReturn(Mono.empty());
+
+    borrarTodoUseCase.apply()
+                      .subscribe(e->
+                        verify(repository, times(1)).deleteAll()
+                      );
   }
 }

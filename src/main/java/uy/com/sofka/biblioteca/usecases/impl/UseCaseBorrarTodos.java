@@ -6,11 +6,11 @@ import org.springframework.validation.annotation.Validated;
 
 import reactor.core.publisher.Mono;
 import uy.com.sofka.biblioteca.repositories.IRecursoRepository;
-import uy.com.sofka.biblioteca.usecases.DeleteAllRecurso;
+import uy.com.sofka.biblioteca.usecases.BorrarTodoRecursos;
 
 @Service
 @Validated
-public class UseCaseBorrarTodos implements DeleteAllRecurso {
+public class UseCaseBorrarTodos implements BorrarTodoRecursos {
 
   @Autowired
   private IRecursoRepository repository;

@@ -24,6 +24,10 @@ public class BorrarRecursoRouter {
                                                         .contentType(MediaType.TEXT_PLAIN)
                                                         .bodyValue("Recurso borrado")
                                     )
+                                    .onErrorResume(e -> ServerResponse.badRequest()
+                                                                      .contentType(MediaType.TEXT_PLAIN)
+                                                                      .bodyValue(e.getMessage())
+                                    )
     );
   }
   

@@ -8,11 +8,11 @@ import reactor.core.publisher.Mono;
 import uy.com.sofka.biblioteca.dtos.RecursoDTO;
 import uy.com.sofka.biblioteca.mappers.RecursoMapper;
 import uy.com.sofka.biblioteca.repositories.IRecursoRepository;
-import uy.com.sofka.biblioteca.usecases.UpdateRecurso;
+import uy.com.sofka.biblioteca.usecases.ModificarRecurso;
 
 @Service
 @Validated
-public class UseCaseModificar implements UpdateRecurso {
+public class UseCaseModificar implements ModificarRecurso {
 
   @Autowired
   private IRecursoRepository repository;

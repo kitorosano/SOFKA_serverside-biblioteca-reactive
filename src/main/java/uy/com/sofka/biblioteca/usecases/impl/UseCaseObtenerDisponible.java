@@ -7,11 +7,11 @@ import org.springframework.validation.annotation.Validated;
 import reactor.core.publisher.Mono;
 import uy.com.sofka.biblioteca.mappers.RecursoMapper;
 import uy.com.sofka.biblioteca.repositories.IRecursoRepository;
-import uy.com.sofka.biblioteca.usecases.FindDisponibleByIdRecurso;
+import uy.com.sofka.biblioteca.usecases.ObtenerDisponibleRecurso;
 
 @Service
 @Validated
-public class UseCaseObtenerDisponible implements FindDisponibleByIdRecurso {
+public class UseCaseObtenerDisponible implements ObtenerDisponibleRecurso {
   
   @Autowired
   private IRecursoRepository repository;

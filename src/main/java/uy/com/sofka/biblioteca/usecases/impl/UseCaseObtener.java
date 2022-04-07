@@ -8,11 +8,11 @@ import reactor.core.publisher.Mono;
 import uy.com.sofka.biblioteca.dtos.RecursoDTO;
 import uy.com.sofka.biblioteca.mappers.RecursoMapper;
 import uy.com.sofka.biblioteca.repositories.IRecursoRepository;
-import uy.com.sofka.biblioteca.usecases.FindByIdRecurso;
+import uy.com.sofka.biblioteca.usecases.ObtenerRecurso;
 
 @Service
 @Validated
-public class UseCaseObtener implements FindByIdRecurso {
+public class UseCaseObtener implements ObtenerRecurso {
 
   @Autowired
   private IRecursoRepository repository;

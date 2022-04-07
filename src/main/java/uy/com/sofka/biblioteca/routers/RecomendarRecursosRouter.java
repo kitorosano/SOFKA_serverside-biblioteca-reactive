@@ -3,12 +3,9 @@ package uy.com.sofka.biblioteca.routers;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import reactor.core.publisher.Flux;
-import uy.com.sofka.biblioteca.dtos.RecursoDTO;
 import uy.com.sofka.biblioteca.usecases.impl.UseCaseRecomendar;
 
 import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
@@ -24,16 +21,20 @@ public class RecomendarRecursosRouter {
     return route(
             GET("/recursos/recomendar").and(accept(MediaType.APPLICATION_JSON)),
             request -> {
-              Flux<RecursoDTO> recursos = useCaseRecomendar.apply(request.queryParam("tipo").orElse(""), request.queryParam("tema").orElse(""));
-              return recursos.hasElements().flatMap(hasElements -> 
-                hasElements ? ServerResponse.ok()
-                                            .contentType(MediaType.APPLICATION_JSON)
-                                            .body(BodyInserters.fromPublisher(
-                                              recursos, 
-                                              RecursoDTO.class
-                                            )) 
-                            : ServerResponse.noContent().build()
-              );
+              // Obtener parametros del request (tipo, tema)
+              var tipo = request.queryParam("tipo").orElse("");
+              var tema = request.queryParam("tema").orElse("");
+              
+              return useCaseRecomendar.apply(tipo, tema)
+                                      .collectList()
+                                      .flatMap(recurso -> {
+                                        if(recurso.size() == 0)
+                                          return ServerResponse.noContent().build();
+
+                                        return ServerResponse.ok()
+                                                              .contentType(MediaType.APPLICATION_JSON)
+                                                              .bodyValue(recurso);
+                                        });
             }
     );
   }

@@ -20,7 +20,7 @@ public class CrearRecursoRouter {
     return route(
             POST("/recursos").and(accept(MediaType.APPLICATION_JSON)),
             request -> request.bodyToMono(RecursoDTO.class)
-                              .flatMap(recursoDTO -> 
+                              .flatMap(recursoDTO ->
                                 useCaseCrear.apply(recursoDTO)
                                             .flatMap(result -> 
                                               ServerResponse.ok()

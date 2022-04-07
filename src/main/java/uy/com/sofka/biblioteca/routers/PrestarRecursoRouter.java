@@ -6,7 +6,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import uy.com.sofka.biblioteca.dtos.RecursoDTO;
 import uy.com.sofka.biblioteca.usecases.impl.UseCasePrestar;
 
 import static org.springframework.web.reactive.function.server.RequestPredicates.PUT;
@@ -19,19 +18,15 @@ public class PrestarRecursoRouter {
   public RouterFunction<ServerResponse> modifyPrestar(UseCasePrestar useCasePrestar) {
     return route(
             PUT("/recursos/recurso/{id}/prestar").and(accept(MediaType.APPLICATION_JSON)),
-            request -> request.bodyToMono(RecursoDTO.class)
-                              .flatMap(recursoDTO -> 
-                                useCasePrestar.apply(request.pathVariable("id"))
-                                              .then(
-                                                ServerResponse.ok()
-                                                              .contentType(MediaType.TEXT_PLAIN)
-                                                              .bodyValue("El recurso se ha prestado correctamente.")
-                                              )
-                                              .onErrorResume(e -> 
-                                                ServerResponse.badRequest()
-                                                              .contentType(MediaType.TEXT_PLAIN)
-                                                              .bodyValue("ERROR: " + e.getMessage()))
-                              )
+            request -> useCasePrestar.apply(request.pathVariable("id"))
+                                      .then(
+                                        ServerResponse.ok()
+                                                      .contentType(MediaType.TEXT_PLAIN)
+                                                      .bodyValue("El recurso se ha prestado correctamente."))
+                                      .onErrorResume(e -> 
+                                        ServerResponse.badRequest()
+                                                      .contentType(MediaType.TEXT_PLAIN)
+                                                      .bodyValue("ERROR: " + e.getMessage()))
     );
   }
 }

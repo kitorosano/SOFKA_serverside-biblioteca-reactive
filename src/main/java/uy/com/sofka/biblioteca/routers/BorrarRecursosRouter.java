@@ -20,11 +20,10 @@ public class BorrarRecursosRouter {
     return route(
             DELETE("/recursos").and(accept(MediaType.APPLICATION_JSON)),
             request -> useCaseBorrarTodos.apply()
-                                          .then(ServerResponse.ok()
-                                                              .contentType(MediaType.TEXT_PLAIN)
-                                                              .bodyValue("Recursos borrados")
-                                          )
+                                          .then(
+                                            ServerResponse.ok()
+                                                          .contentType(MediaType.TEXT_PLAIN)
+                                                          .bodyValue("Recursos borrados"))
     );
   }
-  
 }

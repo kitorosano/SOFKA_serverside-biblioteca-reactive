@@ -8,11 +8,11 @@ import org.springframework.validation.annotation.Validated;
 
 import reactor.core.publisher.Mono;
 import uy.com.sofka.biblioteca.repositories.IRecursoRepository;
-import uy.com.sofka.biblioteca.usecases.UpdatePrestarRecurso;
+import uy.com.sofka.biblioteca.usecases.PrestarRecurso;
 
 @Service
 @Validated
-public class UseCasePrestar implements UpdatePrestarRecurso {
+public class UseCasePrestar implements PrestarRecurso {
 
   @Autowired
   private IRecursoRepository repository;
