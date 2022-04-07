@@ -16,21 +16,22 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 @Configuration
 public class PrestarRecursoRouter {
   @Bean
-  public RouterFunction<ServerResponse> modify(UseCasePrestar useCasePrestar) {
+  public RouterFunction<ServerResponse> modifyPrestar(UseCasePrestar useCasePrestar) {
     return route(
-            PUT("/recursos/{id}/prestar").and(accept(MediaType.APPLICATION_JSON)),
+            PUT("/recursos/recurso/{id}/prestar").and(accept(MediaType.APPLICATION_JSON)),
             request -> request.bodyToMono(RecursoDTO.class)
                               .flatMap(recursoDTO -> 
                                 useCasePrestar.apply(request.pathVariable("id"))
-                                                .flatMap(result -> 
-                                                  ServerResponse.ok()
-                                                                .contentType(MediaType.APPLICATION_JSON)
-                                                                .bodyValue(result)
-                                                )
+                                              .then(
+                                                ServerResponse.ok()
+                                                              .contentType(MediaType.TEXT_PLAIN)
+                                                              .bodyValue("El recurso se ha prestado correctamente.")
+                                              )
+                                              .onErrorResume(e -> 
+                                                ServerResponse.badRequest()
+                                                              .contentType(MediaType.TEXT_PLAIN)
+                                                              .bodyValue("ERROR: " + e.getMessage()))
                               )
-                              .onErrorResume(e -> ServerResponse.badRequest()
-                                                           .contentType(MediaType.TEXT_PLAIN)
-                                                           .bodyValue("ERROR: " + e.getMessage()))
     );
   }
 }

@@ -20,13 +20,13 @@ public class UseCaseDevolver implements UpdateDevolverRecurso {
     return repository.findById(id)
                       .onErrorMap(e -> new IllegalArgumentException("El Id provisto no es valido"))
                       .flatMap(recurso -> {
-                        if(recurso.isDisponible()) {
+                        if(!recurso.isDisponible()) {
                           recurso.setDisponible(true);
                           recurso.setFecha_prestamo(null);
                           return repository.save(recurso);
                         }
                         else
-                          throw new IllegalStateException("El recurso ya está prestado");
+                          throw new IllegalStateException("El recurso no está prestado, por lo que no se puede devolver");
                       })
                       .onErrorMap(e -> e)
                       .then();

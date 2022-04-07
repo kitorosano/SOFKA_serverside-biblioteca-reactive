@@ -1,6 +1,7 @@
 package uy.com.sofka.biblioteca.models;
 
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.UUID;
 
 import javax.validation.constraints.NotBlank;
@@ -72,6 +73,22 @@ public class Recurso {
     this.fecha_prestamo = fecha_prestamo;
   }
 
+
+  @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof Recurso)) {
+            return false;
+        }
+        Recurso recurso = (Recurso) o;
+        return Objects.equals(id, recurso.id) && Objects.equals(nombre, recurso.nombre) && Objects.equals(tipo, recurso.tipo) && Objects.equals(tema, recurso.tema) && Objects.equals(disponible, recurso.disponible) && Objects.equals(fecha_prestamo, recurso.fecha_prestamo);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id, nombre, tipo, tema, disponible, fecha_prestamo);
+  }
 
 
   @Override

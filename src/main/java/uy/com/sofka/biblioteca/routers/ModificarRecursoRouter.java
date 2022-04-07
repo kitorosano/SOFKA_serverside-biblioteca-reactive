@@ -19,7 +19,7 @@ public class ModificarRecursoRouter {
   @Bean
   public RouterFunction<ServerResponse> modify(UseCaseModificar useCaseModificar) {
     return route(
-            PUT("/recursos/{id}").and(accept(MediaType.APPLICATION_JSON)),
+            PUT("/recursos/recurso/{id}").and(accept(MediaType.APPLICATION_JSON)),
             request -> request.bodyToMono(RecursoDTO.class)
                               .flatMap(recursoDTO -> 
                                 useCaseModificar.apply(request.pathVariable("id"), recursoDTO)

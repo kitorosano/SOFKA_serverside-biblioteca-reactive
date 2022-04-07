@@ -28,7 +28,7 @@ public class UseCasePrestar implements UpdatePrestarRecurso {
                           return repository.save(recurso);
                         }
                         else
-                          throw new IllegalStateException("El recurso ya está prestado");
+                          throw new IllegalStateException("El recurso ya está prestado, es necesario devolverlo primero");
                       })
                       .onErrorMap(e -> e)
                       .then();

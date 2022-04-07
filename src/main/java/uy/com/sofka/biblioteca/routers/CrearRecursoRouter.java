@@ -25,12 +25,13 @@ public class CrearRecursoRouter {
                                             .flatMap(result -> 
                                               ServerResponse.ok()
                                                             .contentType(MediaType.APPLICATION_JSON)
-                                                            .bodyValue(result)
-                                            )
+                                                            .bodyValue(result))
+                                            .onErrorResume(e -> 
+                                              ServerResponse.badRequest()
+                                                            .contentType(MediaType.TEXT_PLAIN)
+                                                            .bodyValue("ERROR: " + e.getMessage()))
                               )
-                              .onErrorResume(e -> ServerResponse.badRequest()
-                                                           .contentType(MediaType.TEXT_PLAIN)
-                                                           .bodyValue("ERROR: " + e.getMessage()))
+                              
     );
   }
 }

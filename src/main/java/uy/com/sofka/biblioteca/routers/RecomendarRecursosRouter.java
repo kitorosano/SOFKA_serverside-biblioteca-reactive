@@ -9,8 +9,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 
 import reactor.core.publisher.Flux;
 import uy.com.sofka.biblioteca.dtos.RecursoDTO;
-import uy.com.sofka.biblioteca.usecases.impl.UseCaseRecomendarRecursos;
-
+import uy.com.sofka.biblioteca.usecases.impl.UseCaseRecomendar;
 
 import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
 import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
@@ -21,11 +20,11 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class RecomendarRecursosRouter {
   
   @Bean
-  public RouterFunction<ServerResponse> getAll(UseCaseRecomendarRecursos useCaseUseCaseRecomendarRecursos) {
+  public RouterFunction<ServerResponse> getRecomended(UseCaseRecomendar useCaseRecomendar) {
     return route(
             GET("/recursos/recomendar").and(accept(MediaType.APPLICATION_JSON)),
             request -> {
-              Flux<RecursoDTO> recursos = useCaseUseCaseRecomendarRecursos.apply(request.queryParam("tipo").orElse(""), request.queryParam("tema").orElse(""));
+              Flux<RecursoDTO> recursos = useCaseRecomendar.apply(request.queryParam("tipo").orElse(""), request.queryParam("tema").orElse(""));
               return recursos.hasElements().flatMap(hasElements -> 
                 hasElements ? ServerResponse.ok()
                                             .contentType(MediaType.APPLICATION_JSON)

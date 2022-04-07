@@ -16,21 +16,22 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 @Configuration
 public class DevolverRecursoRouter {
   @Bean
-  public RouterFunction<ServerResponse> modify(UseCaseDevolver useCaseDevolver) {
+  public RouterFunction<ServerResponse> modifyDevolver(UseCaseDevolver useCaseDevolver) {
     return route(
-            PUT("/recursos/{id}/devolver").and(accept(MediaType.APPLICATION_JSON)),
+            PUT("/recursos/recurso/{id}/devolver").and(accept(MediaType.APPLICATION_JSON)),
             request -> request.bodyToMono(RecursoDTO.class)
                               .flatMap(recursoDTO -> 
                                 useCaseDevolver.apply(request.pathVariable("id"))
-                                                .flatMap(result -> 
+                                                .then(
                                                   ServerResponse.ok()
-                                                                .contentType(MediaType.APPLICATION_JSON)
-                                                                .bodyValue(result)
+                                                                .contentType(MediaType.TEXT_PLAIN)
+                                                                .bodyValue("El recurso se ha devuelto correctamente.")
                                                 )
+                                                .onErrorResume(e -> 
+                                                  ServerResponse.badRequest()
+                                                                .contentType(MediaType.TEXT_PLAIN)
+                                                                .bodyValue("ERROR: " + e.getMessage()))
                               )
-                              .onErrorResume(e -> ServerResponse.badRequest()
-                                                           .contentType(MediaType.TEXT_PLAIN)
-                                                           .bodyValue("ERROR: " + e.getMessage()))
     );
   }
 }

@@ -20,7 +20,7 @@ public class ObtenerRecursoRouter {
   @Bean
   public RouterFunction<ServerResponse> get(UseCaseObtener useCaseObtener) {
     return route(
-            GET("/recursos/{id}").and(accept(MediaType.APPLICATION_JSON)),
+            GET("/recursos/recurso/{id}").and(accept(MediaType.APPLICATION_JSON)),
             request -> {
               Mono<RecursoDTO> recurso = useCaseObtener.apply(request.pathVariable("id"));
               return recurso.hasElement().flatMap(hasElements -> 
@@ -30,7 +30,7 @@ public class ObtenerRecursoRouter {
                                               recurso, 
                                               RecursoDTO.class
                                             )) 
-                            : ServerResponse.noContent().build()
+                            : ServerResponse.notFound().build()
               );
             }
     );

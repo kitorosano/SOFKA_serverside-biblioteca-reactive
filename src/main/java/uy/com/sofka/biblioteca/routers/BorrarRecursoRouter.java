@@ -16,9 +16,9 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class BorrarRecursoRouter {
   
   @Bean
-  public RouterFunction<ServerResponse> purgeAll(UseCaseBorrar useCaseBorrar) {
+  public RouterFunction<ServerResponse> purge(UseCaseBorrar useCaseBorrar) {
     return route(
-            DELETE("/recursos/{id}").and(accept(MediaType.APPLICATION_JSON)),
+            DELETE("/recursos/recurso/{id}").and(accept(MediaType.APPLICATION_JSON)),
             request -> useCaseBorrar.apply(request.pathVariable("id"))
                                     .then(ServerResponse.ok()
                                                         .contentType(MediaType.TEXT_PLAIN)

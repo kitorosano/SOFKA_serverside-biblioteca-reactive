@@ -19,20 +19,18 @@ public class ObtenerDisponibleRecursoRouter {
   @Bean
   public RouterFunction<ServerResponse> getDisponible(UseCaseObtener useCaseObtener) {
     return route(
-            GET("/recursos/{id}/disponible").and(accept(MediaType.APPLICATION_JSON)),
+            GET("/recursos/recurso/{id}/disponible").and(accept(MediaType.APPLICATION_JSON)),
             request -> {
               Mono<RecursoDTO> recurso = useCaseObtener.apply(request.pathVariable("id"));
               return recurso.hasElement().flatMap(hasElements -> 
-                hasElements ? ServerResponse.ok()
-                                            .contentType(MediaType.TEXT_PLAIN)
-                                            .bodyValue(
-                                              recurso.flatMap(_recurso -> {
-                                                if(_recurso.isDisponible())
-                                                  return Mono.just("El recurso esta disponible");
-                                                else
-                                                  return Mono.just("El recurso no esta disponible. Se presto el dia: " + _recurso.getFecha_prestamo().toString());
-                                              })
-                                            ) 
+                hasElements ? recurso.flatMap(_recurso -> _recurso.isDisponible() 
+                                  ? ServerResponse.ok()
+                                                  .contentType(MediaType.TEXT_PLAIN)
+                                                  .bodyValue("El recurso está disponible.")
+                                  : ServerResponse.ok()
+                                                  .contentType(MediaType.TEXT_PLAIN)
+                                                  .bodyValue("El recurso no esta disponible. Se presto el dia: " + _recurso.getFecha_prestamo().toString()) 
+                              )
                             : ServerResponse.noContent().build()
               );
     });
