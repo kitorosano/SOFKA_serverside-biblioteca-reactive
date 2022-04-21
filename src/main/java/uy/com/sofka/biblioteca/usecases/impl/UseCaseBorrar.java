@@ -17,9 +17,6 @@ public class UseCaseBorrar implements BorrarRecurso {
 
   @Override
   public Mono<Void> apply(String id) {
-    // Validar que el id no sea nulo o vacio
-    if(id == null || id.isEmpty())
-      return Mono.error(new Exception("El id del recurso no puede ser nulo o vacio"));
     return repository.deleteById(id).onErrorMap(e -> new IllegalArgumentException("El Id provisto no es valido"));
   }
   

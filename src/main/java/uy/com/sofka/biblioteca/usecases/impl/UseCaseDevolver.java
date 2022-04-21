@@ -19,6 +19,7 @@ public class UseCaseDevolver implements DevolverRecurso {
   public Mono<Void> apply(String id) {
     return repository.findById(id)
                       .onErrorMap(e -> new IllegalArgumentException("El Id provisto no es valido"))
+                      .switchIfEmpty(Mono.error(new IllegalArgumentException("No existe el recurso")))
                       .flatMap(recurso -> {
                         if(!recurso.isDisponible()) {
                           recurso.setDisponible(true);

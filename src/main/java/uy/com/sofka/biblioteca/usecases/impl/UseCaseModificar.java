@@ -23,9 +23,11 @@ public class UseCaseModificar implements ModificarRecurso {
   public Mono<RecursoDTO> apply(String id, RecursoDTO recursoDTO) {
     return repository.findById(id)
                       .onErrorMap(e -> new IllegalArgumentException("El Id provisto no es valido"))
+                      .switchIfEmpty(Mono.error(new IllegalArgumentException("No existe el recurso")))
                       .map(found -> mapper.mapDTO2EntityUpdate(found).apply(recursoDTO))
                       .flatMap(repository::save)
-                      .map(mapper.mapEntity2DTO());
+                      .map(mapper.mapEntity2DTO())
+                      .onErrorMap(e -> e);
   }
   
 }

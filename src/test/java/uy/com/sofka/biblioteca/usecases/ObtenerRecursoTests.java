@@ -26,6 +26,7 @@ public class ObtenerRecursoTests {
   @Autowired
   private ObtenerRecurso findByIdUseCase;
   
+  
   @Test
   @DisplayName("Test findById Success")
   public void obtenerRecursoPorId() {
@@ -52,6 +53,7 @@ public class ObtenerRecursoTests {
                         assertEquals(LocalDate.now(), recurso1.getFecha_prestamo());
                       });
   }
+
   @Test
   @DisplayName("Test findById Not found")
   public void obtenerRecursoPorIdNotFound() {

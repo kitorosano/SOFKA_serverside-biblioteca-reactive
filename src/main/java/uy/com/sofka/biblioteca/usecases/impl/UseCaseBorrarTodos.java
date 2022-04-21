@@ -17,7 +17,7 @@ public class UseCaseBorrarTodos implements BorrarTodoRecursos {
 
   @Override
   public Mono<Void> apply() {
-    return repository.deleteAll().onErrorMap(e -> new IllegalArgumentException("El Id provisto no es valido"));
+    return repository.deleteAll();
   }
   
 }

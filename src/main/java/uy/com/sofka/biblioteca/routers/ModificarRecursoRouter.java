@@ -26,11 +26,12 @@ public class ModificarRecursoRouter {
                                                 .flatMap(result -> 
                                                   ServerResponse.ok()
                                                                 .contentType(MediaType.APPLICATION_JSON)
-                                                                .bodyValue(result)
-                                                ))
-                              .onErrorResume(e -> ServerResponse.badRequest()
-                                                           .contentType(MediaType.TEXT_PLAIN)
-                                                           .bodyValue("ERROR: " + e.getMessage()))
+                                                                .bodyValue(result))
+                                                                
+                                                .onErrorResume(e -> 
+                                                  ServerResponse.badRequest()
+                                                                .contentType(MediaType.TEXT_PLAIN)
+                                                                .bodyValue("ERROR: " + e.getMessage())))
     );
   }
 }
